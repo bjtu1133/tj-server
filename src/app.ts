@@ -23,7 +23,7 @@ import * as homeController from "./controllers/home";
 import * as userController from "./controllers/user";
 import * as apiController from "./controllers/api";
 import * as contactController from "./controllers/contact";
-
+import * as adminController from "./controllers/admin";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
@@ -43,7 +43,7 @@ mongoose.connect(mongoUrl, {useMongoClient: true}).then(
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", path.join(__dirname, "./views"));
 app.set("view engine", "pug");
 app.use(compression());
 app.use(logger("dev"));
@@ -99,6 +99,7 @@ app.get("/signup", userController.getSignup);
 app.post("/signup", userController.postSignup);
 app.get("/contact", contactController.getContact);
 app.post("/contact", contactController.postContact);
+app.get("/admin", adminController.getAdminTool);
 app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
 app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);

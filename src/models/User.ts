@@ -14,9 +14,10 @@ export type UserModel = mongoose.Document & {
   profile: {
     name: string,
     gender: string,
+    phone: string,
     location: string,
     website: string,
-    picture: string
+    picture: string,
   },
 
   comparePassword: (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void,
@@ -42,6 +43,7 @@ const userSchema = new mongoose.Schema({
   profile: {
     name: String,
     gender: String,
+    phone: String,
     location: String,
     website: String,
     picture: String

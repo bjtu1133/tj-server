@@ -144,6 +144,7 @@ export let postUpdateProfile = (req: Request, res: Response, next: NextFunction)
     user.email = req.body.email || "";
     user.profile.name = req.body.name || "";
     user.profile.gender = req.body.gender || "";
+    user.profile.phone = req.body.phone || "";
     user.profile.location = req.body.location || "";
     user.profile.website = req.body.website || "";
     user.save((err: WriteError) => {
