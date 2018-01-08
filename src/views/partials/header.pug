@@ -15,7 +15,7 @@
           a(href='/') 主页
         li(class=(title == 'Contact') ? 'active' : undefined)
           a(href='/contact') 联系我们
-        if user
+        if ra && ra.admin
           li(class=(title == 'Admin') ? 'active' : undefined)
             a(href='/admin') 管理用户权限
       ul.nav.navbar-nav.navbar-right

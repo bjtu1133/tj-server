@@ -2,4 +2,32 @@ extends layout
 
 block content
   .page-header
-    h3 管理用户信息
+    h3 管理用户权限
+  
+  table.table.table-striped.form-group
+    tr
+      td 用户邮箱
+      td 用户名
+      td 管理员
+      td 客户
+      td 办公室
+      td 零售商
+      td
+    each role in roles
+      form(action='/admin/roleAssignment', method='POST')
+        tr.form-group
+          td= role.userEmail 
+          td= role.userName 
+          td
+            input(type='checkbox', checked=role.assignment.admin, name='admin') 
+          td
+            input(type='checkbox', checked=role.assignment.client, name='client') 
+          td
+            input(type='checkbox', checked=role.assignment.office, name='office') 
+          td
+            input(type='checkbox', checked=role.assignment.retail, name='retail')
+          td
+            input(type='hidden', value=role.userId, name='userId')
+            button.btn.btn-primary.btn-xs(type='submit')
+              i.fa.fa-lock
+              | 更新权限

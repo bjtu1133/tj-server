@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt-nodejs";
 import * as crypto from "crypto";
 import * as mongoose from "mongoose";
-
+import { default as Role, RoleModel } from "./Role";
 export type UserModel = mongoose.Document & {
   email: string,
   password: string,
@@ -63,6 +63,30 @@ userSchema.pre("save", function save(next) {
       user.password = hash;
       next();
     });
+  });
+});
+
+userSchema.post("save", function save(next) {
+  const user = this;
+  Role.findOne({userId: user.id}, (err, role: RoleModel) => {
+    if (!role) {
+      const role = new Role({
+        userId: user.id,
+        userName: user.profile.name || "",
+        userEmail: user.email || "",
+        assignment: {
+          admin: false,
+          client: false,
+          office: false,
+          retail: false
+        }
+      });
+      role.save();
+    } else {
+      role.userName = user.profile.name;
+      role.userEmail = user.email;
+      role.save();
+    }
   });
 });
 

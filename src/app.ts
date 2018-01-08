@@ -12,6 +12,7 @@ import * as mongoose from "mongoose";
 import * as passport from "passport";
 import * as expressValidator from "express-validator";
 import * as bluebird from "bluebird";
+import { default as Role, RoleModel } from "./models/Role";
 
 const MongoStore = mongo(session);
 
@@ -66,7 +67,14 @@ app.use(lusca.xframe("SAMEORIGIN"));
 app.use(lusca.xssProtection(true));
 app.use((req, res, next) => {
   res.locals.user = req.user;
-  next();
+  if (!req.user) {
+    next();
+  } else {
+    Role.findOne({userId: req.user.id}, (err, role: RoleModel) => {
+      res.locals.ra = role.assignment;
+      next();
+    });
+  }
 });
 app.use((req, res, next) => {
   // After successful login, redirect back to the intended page
@@ -100,6 +108,7 @@ app.post("/signup", userController.postSignup);
 app.get("/contact", contactController.getContact);
 app.post("/contact", contactController.postContact);
 app.get("/admin", adminController.getAdminTool);
+app.post("/admin/roleAssignment", adminController.postUpdateRoleAssignment);
 app.get("/account", passportConfig.isAuthenticated, userController.getAccount);
 app.post("/account/profile", passportConfig.isAuthenticated, userController.postUpdateProfile);
 app.post("/account/password", passportConfig.isAuthenticated, userController.postUpdatePassword);
