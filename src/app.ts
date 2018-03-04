@@ -13,6 +13,7 @@ import * as passport from "passport";
 import * as expressValidator from "express-validator";
 import * as bluebird from "bluebird";
 import { default as Role, RoleModel } from "./models/Role";
+import * as storageApi from "./api/storageController";
 
 const MongoStore = mongo(session);
 
@@ -28,6 +29,7 @@ import * as adminController from "./controllers/admin";
 
 // API keys and Passport configuration
 import * as passportConfig from "./config/passport";
+import * as cors from "cors";
 
 // Create Express server
 const app = express();
@@ -41,6 +43,17 @@ mongoose.connect(mongoUrl, {useMongoClient: true}).then(
   console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
   // process.exit();
 });
+
+const options: cors.CorsOptions = {
+  allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+  credentials: true,
+  methods: "GET,HEAD,OPTIONS,PUT,PATCH,POST,DELETE",
+  origin: "*",
+  preflightContinue: false
+};
+
+const router = express.Router();
+router.use(cors(options));
 
 // Express configuration
 app.set("port", process.env.PORT || 3000);
@@ -128,5 +141,12 @@ app.get("/auth/facebook", passport.authenticate("facebook", { scope: ["email", "
 app.get("/auth/facebook/callback", passport.authenticate("facebook", { failureRedirect: "/login" }), (req, res) => {
   res.redirect(req.session.returnTo || "/");
 });
+/**
+ * Storage APIs
+ */
+app.get("/api/storage", storageApi.getStorage);
+app.post("/api/storage", storageApi.updateStorage);
+app.put("/api/storage", storageApi.updateStorage);
+app.options("/api/storage", router);
 
 module.exports = app;
